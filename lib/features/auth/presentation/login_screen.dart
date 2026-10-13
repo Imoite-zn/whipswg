@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ride_swg/core/supabase/supabase_config.dart';
+import 'package:ride_swg/core/auth/auth_service.dart';
 import 'package:ride_swg/core/theme/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -48,12 +48,32 @@ class _LoginScreenState extends State<LoginScreen>
       _error = null;
     });
     try {
-      await SupabaseConfig.client.auth.signInWithPassword(
+      await AuthService.instance.signIn(
         email: _emailCtrl.text.trim(),
         password: _passwordCtrl.text,
       );
     } on Exception catch (e) {
       setState(() => _error = e.toString().replaceAll('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  void _fillTestAccount(TestAccount account) {
+    _emailCtrl.text = account.email;
+    _passwordCtrl.text = account.password;
+    setState(() => _error = null);
+  }
+
+  void _quickLogin(TestAccount account) {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      AuthService.instance.loginAsTestAccount(account);
+    } catch (e) {
+      setState(() => _error = e.toString());
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -266,6 +286,17 @@ class _LoginScreenState extends State<LoginScreen>
                     )
                         .animate()
                         .fadeIn(delay: 500.ms, duration: 600.ms)
+                        .slideY(begin: 0.2, end: 0),
+
+                    const SizedBox(height: 28),
+
+                    // Quick Test Accounts Card
+                    _TestAccountsSection(
+                      onSelect: _fillTestAccount,
+                      onQuickLogin: _quickLogin,
+                    )
+                        .animate()
+                        .fadeIn(delay: 600.ms, duration: 600.ms)
                         .slideY(begin: 0.2, end: 0),
 
                     const SizedBox(height: 40),
@@ -485,3 +516,213 @@ class _ErrorBanner extends StatelessWidget {
     );
   }
 }
+
+// ─── Test Accounts Section ───────────────────────────────────────────────────
+
+class _TestAccountsSection extends StatelessWidget {
+  const _TestAccountsSection({
+    required this.onSelect,
+    required this.onQuickLogin,
+  });
+
+  final ValueChanged<TestAccount> onSelect;
+  final ValueChanged<TestAccount> onQuickLogin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: AppColors.gold.withValues(alpha: 0.35),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  gradient: AppColors.goldGradient,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'TEST ACCESS',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '1-tap to auto-fill or log in directly',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ...AuthService.testAccounts.map((account) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _TestAccountTile(
+                account: account,
+                onFill: () => onSelect(account),
+                onQuickLogin: () => onQuickLogin(account),
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+class _TestAccountTile extends StatelessWidget {
+  const _TestAccountTile({
+    required this.account,
+    required this.onFill,
+    required this.onQuickLogin,
+  });
+
+  final TestAccount account;
+  final VoidCallback onFill;
+  final VoidCallback onQuickLogin;
+
+  Color _badgeColor(String badge) {
+    switch (badge) {
+      case 'PRO':
+        return AppColors.primary;
+      case 'TRACK':
+        return const Color(0xFF38BDF8); // neon cyan
+      case 'DRIFT':
+        return const Color(0xFFA855F7); // purple
+      case 'VIP':
+      default:
+        return AppColors.gold;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final badgeColor = _badgeColor(account.badge);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.border,
+          width: 0.8,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onFill,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                // Badge
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: badgeColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: badgeColor.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      account.badge,
+                      style: TextStyle(
+                        color: badgeColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              account.displayName,
+                              style: AppTextStyles.labelLarge.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            '• ${account.role}',
+                            style: AppTextStyles.labelSmall.copyWith(
+                              color: badgeColor,
+                              fontSize: 10,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${account.email} / ${account.password}',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textMuted,
+                          fontSize: 11,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Quick login button
+                IconButton(
+                  tooltip: 'Instant Log In',
+                  icon: const Icon(
+                    Icons.login_rounded,
+                    color: AppColors.gold,
+                    size: 20,
+                  ),
+                  onPressed: onQuickLogin,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+

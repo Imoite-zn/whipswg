@@ -47,13 +47,13 @@ static const String supabaseAnonKey = 'YOUR_ANON_KEY';
 ## 📦 Step 2: Install Dependencies
 
 ```bash
-/home/z3iss/programs/flutter/bin/ flutter pub get
+/home/z3iss/programs/flutter/bin/flutter pub get
 ```
 
 ## 🚀 Step 3: Run the App
 
 ```bash
-/home/z3iss/programs/flutter/bin/ flutter run
+/home/z3iss/programs/flutter/bin/flutter run
 ```
 
 ## 🚗 Step 4: Add Real 3D Car Models

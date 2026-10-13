@@ -14,6 +14,8 @@ class MainShell extends StatelessWidget {
     int currentIndex = 0;
     if (location.startsWith('/catalog')) {
       currentIndex = 1;
+    } else if (location.startsWith('/mechanics')) {
+      currentIndex = 2;
     }
 
     return Scaffold(
@@ -23,6 +25,7 @@ class MainShell extends StatelessWidget {
         onTap: (i) {
           if (i == 0) context.go('/garage');
           if (i == 1) context.go('/catalog');
+          if (i == 2) context.go('/mechanics');
         },
       ),
     );
@@ -61,6 +64,13 @@ class _BottomNav extends StatelessWidget {
                 label: 'MODS',
                 isActive: currentIndex == 1,
                 onTap: () => onTap(1),
+              ),
+              _NavItem(
+                icon: Icons.handyman_outlined,
+                activeIcon: Icons.handyman,
+                label: 'MECHANICS',
+                isActive: currentIndex == 2,
+                onTap: () => onTap(2),
               ),
             ],
           ),

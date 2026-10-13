@@ -12,6 +12,8 @@ class CarModel {
     this.torque,
     this.weight,
     this.drivetrain,
+    this.multiAnglePhotos = const [],
+    this.isCustomUpload = false,
   });
 
   final String id;
@@ -26,6 +28,8 @@ class CarModel {
   final int? torque;
   final int? weight;
   final String? drivetrain;
+  final List<String> multiAnglePhotos;
+  final bool isCustomUpload;
 
   String get fullName => '$year $brand $name';
 

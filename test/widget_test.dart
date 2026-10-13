@@ -1,30 +1,58 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:ride_swg/main.dart';
+import 'package:ride_swg/core/auth/auth_service.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const RideSwgApp());
+  test('AuthService has valid test accounts', () {
+    expect(AuthService.testAccounts.isNotEmpty, isTrue);
+    expect(AuthService.testAccounts.length, equals(4));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    final driver = AuthService.testAccounts.first;
+    expect(driver.email, equals('driver@rideswg.com'));
+    expect(driver.displayName, equals('Alex Mercer'));
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  test('AuthService test account sign in, verify, and sign out', () async {
+    final auth = AuthService.instance;
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Initially unauthenticated
+    await auth.signOut();
+    expect(auth.isAuthenticated, isFalse);
+
+    // Sign in with valid test account
+    await auth.signIn(
+      email: 'driver@rideswg.com',
+      password: 'RideSwg2026!',
+    );
+    expect(auth.isAuthenticated, isTrue);
+    expect(auth.currentUserName, equals('Alex Mercer'));
+    expect(auth.currentUserRole, equals('Pro Street Tuner'));
+
+    // Sign out
+    await auth.signOut();
+    expect(auth.isAuthenticated, isFalse);
+
+    // Sign in with 1-tap test login
+    final demoAccount = AuthService.testAccounts.last;
+    auth.loginAsTestAccount(demoAccount);
+    expect(auth.isAuthenticated, isTrue);
+    expect(auth.currentUserName, equals('Demo Driver'));
+
+    // Sign out
+    await auth.signOut();
+    expect(auth.isAuthenticated, isFalse);
+  });
+
+  test('AuthService invalid password throws error for test account', () async {
+    final auth = AuthService.instance;
+    await auth.signOut();
+
+    expect(
+      () => auth.signIn(
+        email: 'driver@rideswg.com',
+        password: 'wrong_password',
+      ),
+      throwsException,
+    );
+    expect(auth.isAuthenticated, isFalse);
   });
 }

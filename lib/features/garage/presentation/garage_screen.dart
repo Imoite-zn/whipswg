@@ -1,20 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ride_swg/core/supabase/supabase_config.dart';
+import 'package:ride_swg/core/auth/auth_service.dart';
 import 'package:ride_swg/core/theme/app_theme.dart';
 import 'package:ride_swg/features/garage/data/car_model.dart';
+import 'package:ride_swg/features/garage/data/garage_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-class GarageScreen extends StatefulWidget {
+class GarageScreen extends ConsumerStatefulWidget {
   const GarageScreen({super.key});
 
   @override
-  State<GarageScreen> createState() => _GarageScreenState();
+  ConsumerState<GarageScreen> createState() => _GarageScreenState();
 }
 
-class _GarageScreenState extends State<GarageScreen> {
+class _GarageScreenState extends ConsumerState<GarageScreen> {
   String _selectedCategory = 'All';
 
   final _categories = [
@@ -24,25 +26,38 @@ class _GarageScreenState extends State<GarageScreen> {
     'Muscle',
     'Sedan',
     'Rally',
+    'Truck',
+    'Hatchback',
+    'SUV',
   ];
 
   List<CarModel> get _filteredCars {
-    if (_selectedCategory == 'All') return CarModel.demo;
-    return CarModel.demo
-        .where((c) => c.category == _selectedCategory)
-        .toList();
+    final all = ref.watch(garageProvider);
+    if (_selectedCategory == 'All') return all;
+    return all.where((c) => c.category == _selectedCategory).toList();
   }
 
-  String get _userName {
-    final meta =
-        SupabaseConfig.client.auth.currentUser?.userMetadata;
-    return (meta?['display_name'] as String?) ?? 'Driver';
-  }
+  String get _userName => AuthService.instance.currentUserName;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/garage/upload-car'),
+        backgroundColor: AppColors.primary,
+        icon: const Icon(Icons.add, color: Colors.white),
+        label: const Text(
+          'ADD CAR',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.2,
+            fontSize: 12,
+          ),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
       body: CustomScrollView(
         slivers: [
           // ─── Header ───────────────────────────────────────────
@@ -183,7 +198,7 @@ class _GarageHeader extends StatelessWidget {
           // Profile + sign out
           GestureDetector(
             onTap: () async {
-              await SupabaseConfig.client.auth.signOut();
+              await AuthService.instance.signOut();
             },
             child: Container(
               width: 44,
@@ -381,6 +396,31 @@ class _CarCardState extends State<_CarCard> {
                           ),
                         ),
                       ),
+                      // Custom upload badge
+                      if (widget.car.isCustomUpload)
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withOpacity(0.9),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Text(
+                              'CUSTOM',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 8,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ),
+                        ),
                       // 3D icon
                       Positioned(
                         bottom: 10,

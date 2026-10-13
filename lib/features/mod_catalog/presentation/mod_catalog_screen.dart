@@ -118,7 +118,7 @@ class _ModCatalogScreenState extends State<ModCatalogScreen> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 14,
                 crossAxisSpacing: 14,
-                childAspectRatio: 0.85,
+                childAspectRatio: 0.80,
               ),
               delegate: SliverChildBuilderDelegate(
                 (ctx, i) => _ModPartCard(part: _demoMods[i], index: i),
@@ -188,8 +188,7 @@ class _FeaturedBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      height: 120,
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
@@ -198,66 +197,71 @@ class _FeaturedBanner extends StatelessWidget {
           end: Alignment.centerRight,
         ),
         border: Border.all(color: AppColors.primaryDark, width: 0.5),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.primaryGlow,
             blurRadius: 20,
-            offset: const Offset(0, 6),
+            offset: Offset(0, 6),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         child: Row(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Text(
-                    'FEATURED',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'FEATURED',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Akrapovic\nExhaust System',
-                  style: AppTextStyles.headlineSmall.copyWith(fontSize: 17),
-                ),
-                const SizedBox(height: 6),
-                ShaderMask(
-                  shaderCallback: (b) =>
-                      AppColors.goldGradient.createShader(b),
-                  child: const Text(
-                    '\$2,499',
-                    style: TextStyle(
-                      fontFamily: 'Rajdhani',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                  const SizedBox(height: 8),
+                  Text(
+                    'Akrapovic\nExhaust System',
+                    style: AppTextStyles.headlineSmall.copyWith(
+                      fontSize: 16,
+                      height: 1.2,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 6),
+                  ShaderMask(
+                    shaderCallback: (b) =>
+                        AppColors.goldGradient.createShader(b),
+                    child: const Text(
+                      '\$2,499',
+                      style: TextStyle(
+                        fontFamily: 'Rajdhani',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const Spacer(),
+            const SizedBox(width: 12),
             const Icon(
               Icons.whatshot,
-              size: 72,
+              size: 64,
               color: Color(0x30D62828),
             ),
           ],
@@ -295,7 +299,7 @@ class _ModPartCard extends StatelessWidget {
                 ),
                 gradient: LinearGradient(
                   colors: [
-                    part.color.withOpacity(0.1),
+                    part.color.withValues(alpha: 0.1),
                     AppColors.surfaceElevated,
                   ],
                   begin: Alignment.topLeft,
@@ -306,7 +310,7 @@ class _ModPartCard extends StatelessWidget {
                 child: Icon(
                   part.icon,
                   size: 52,
-                  color: part.color.withOpacity(0.85),
+                  color: part.color.withValues(alpha: 0.85),
                 ),
               ),
             ),

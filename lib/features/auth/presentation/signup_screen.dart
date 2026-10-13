@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ride_swg/core/auth/auth_service.dart';
 import 'package:ride_swg/core/supabase/supabase_config.dart';
 import 'package:ride_swg/core/theme/app_theme.dart';
 
@@ -55,15 +56,17 @@ class _SignUpScreenState extends State<SignUpScreen>
       _success = null;
     });
     try {
-      await SupabaseConfig.client.auth.signUp(
+      await AuthService.instance.signUp(
         email: _emailCtrl.text.trim(),
         password: _passwordCtrl.text,
-        data: {'display_name': _nameCtrl.text.trim()},
+        displayName: _nameCtrl.text.trim(),
       );
-      setState(() {
-        _success =
-            'Account created! Check your email to verify your account.';
-      });
+      if (SupabaseConfig.isConfigured) {
+        setState(() {
+          _success =
+              'Account created! Check your email to verify your account.';
+        });
+      }
     } on Exception catch (e) {
       setState(() => _error = e.toString().replaceAll('Exception: ', ''));
     } finally {
