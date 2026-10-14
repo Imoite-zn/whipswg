@@ -65,15 +65,15 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _error = null);
   }
 
-  void _quickLogin(TestAccount account) {
+  Future<void> _quickLogin(TestAccount account) async {
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      AuthService.instance.loginAsTestAccount(account);
+      await AuthService.instance.loginAsTestAccount(account);
     } catch (e) {
-      setState(() => _error = e.toString());
+      setState(() => _error = e.toString().replaceAll('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _loading = false);
     }

@@ -109,13 +109,57 @@ class AuthService extends ChangeNotifier {
     if (_currentDemoUser != null) {
       return _currentDemoUser!.role;
     }
+    try {
+      if (SupabaseConfig.isConfigured) {
+        final meta = SupabaseConfig.client.auth.currentUser?.userMetadata;
+        final role = meta?['role'] as String?;
+        if (role != null && role.isNotEmpty) return role;
+      }
+    } catch (_) {}
     return 'Tuner';
+  }
+
+  String? get currentUserId {
+    try {
+      if (SupabaseConfig.isConfigured) {
+        final id = SupabaseConfig.client.auth.currentUser?.id;
+        if (id != null && id.isNotEmpty) return id;
+      }
+    } catch (_) {}
+    if (_currentDemoUser != null) {
+      return _currentDemoUser!.email;
+    }
+    return null;
   }
 
   Future<void> signIn({required String email, required String password}) async {
     final cleanEmail = email.trim().toLowerCase();
 
-    // 1. Check for matching test account
+    // 1. Authenticate with Supabase if configured
+    if (SupabaseConfig.isConfigured) {
+      try {
+        await SupabaseConfig.client.auth.signInWithPassword(
+          email: cleanEmail,
+          password: password,
+        );
+        _currentDemoUser = null;
+        notifyListeners();
+        return;
+      } catch (e) {
+        // Fallback to local test account if network is down
+        final testAccount = testAccounts.where(
+          (a) => a.email.toLowerCase() == cleanEmail && a.password == password,
+        ).firstOrNull;
+        if (testAccount != null) {
+          _currentDemoUser = testAccount;
+          notifyListeners();
+          return;
+        }
+        rethrow;
+      }
+    }
+
+    // 2. Offline / unconfigured test account check
     final testAccount = testAccounts.where(
       (a) => a.email.toLowerCase() == cleanEmail && a.password == password,
     ).firstOrNull;
@@ -126,7 +170,6 @@ class AuthService extends ChangeNotifier {
       return;
     }
 
-    // 2. Check if it is a test account email with wrong password
     final testWithEmail = testAccounts.where(
       (a) => a.email.toLowerCase() == cleanEmail,
     ).firstOrNull;
@@ -135,22 +178,25 @@ class AuthService extends ChangeNotifier {
       throw Exception('Incorrect password for ${testWithEmail.email}. Expected: ${testWithEmail.password}');
     }
 
-    // 3. Otherwise use Supabase if configured
-    if (SupabaseConfig.isConfigured) {
-      await SupabaseConfig.client.auth.signInWithPassword(
-        email: cleanEmail,
-        password: password,
-      );
-      _currentDemoUser = null;
-      notifyListeners();
-    } else {
-      throw Exception(
-        'Supabase is not configured yet. Use a test account (e.g. demo@rideswg.com / demo1234) or add credentials to supabase_config.dart',
-      );
-    }
+    throw Exception(
+      'Supabase is not configured yet. Use a test account (e.g. demo@rideswg.com / demo1234) or add credentials to supabase_config.dart',
+    );
   }
 
-  void loginAsTestAccount(TestAccount account) {
+  Future<void> loginAsTestAccount(TestAccount account) async {
+    if (SupabaseConfig.isConfigured) {
+      try {
+        await SupabaseConfig.client.auth.signInWithPassword(
+          email: account.email.trim(),
+          password: account.password,
+        );
+        _currentDemoUser = null;
+        notifyListeners();
+        return;
+      } catch (e) {
+        debugPrint('Supabase login error for test account: $e');
+      }
+    }
     _currentDemoUser = account;
     notifyListeners();
   }

@@ -154,16 +154,21 @@ class _BodyPartsSelectorState extends State<BodyPartsSelector> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      pkg.manufacturer,
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: AppColors.gold,
-                        fontSize: 11,
+                    Expanded(
+                      child: Text(
+                        pkg.manufacturer,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: AppColors.gold,
+                          fontSize: 11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const Spacer(),
-                    if (isSelected)
+                    if (isSelected) ...[
+                      const SizedBox(width: 8),
                       const Icon(Icons.check_circle, color: AppColors.primary, size: 20),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -177,11 +182,15 @@ class _BodyPartsSelectorState extends State<BodyPartsSelector> {
                   children: [
                     Icon(Icons.straighten, size: 14, color: AppColors.textMuted),
                     const SizedBox(width: 4),
-                    Text(
-                      pkg.measurements,
-                      style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+                    Expanded(
+                      child: Text(
+                        pkg.measurements,
+                        style: AppTextStyles.bodySmall.copyWith(fontSize: 11),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
                     Text(
                       pkg.price == 0 ? 'STOCK' : '\$${pkg.price.toInt()}',
                       style: AppTextStyles.labelLarge.copyWith(
@@ -258,15 +267,18 @@ class _BodyPartsSelectorState extends State<BodyPartsSelector> {
                       letterSpacing: 1.2,
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    selectedPart.name,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textPrimary,
-                      fontSize: 11,
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      selectedPart.name,
+                      textAlign: TextAlign.end,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.textPrimary,
+                        fontSize: 11,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

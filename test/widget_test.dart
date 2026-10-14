@@ -33,7 +33,7 @@ void main() {
 
     // Sign in with 1-tap test login
     final demoAccount = AuthService.testAccounts.last;
-    auth.loginAsTestAccount(demoAccount);
+    await auth.loginAsTestAccount(demoAccount);
     expect(auth.isAuthenticated, isTrue);
     expect(auth.currentUserName, equals('Demo Driver'));
 

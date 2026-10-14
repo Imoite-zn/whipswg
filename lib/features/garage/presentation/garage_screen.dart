@@ -40,11 +40,24 @@ class _GarageScreenState extends ConsumerState<GarageScreen> {
   String get _userName => AuthService.instance.currentUserName;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(garageProvider.notifier).fetchCars();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/garage/upload-car'),
+        onPressed: () async {
+          await context.push('/garage/upload-car');
+          if (context.mounted) {
+            ref.read(garageProvider.notifier).fetchCars();
+          }
+        },
         backgroundColor: AppColors.primary,
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
@@ -58,8 +71,13 @@ class _GarageScreenState extends ConsumerState<GarageScreen> {
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      body: CustomScrollView(
-        slivers: [
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        backgroundColor: AppColors.surfaceElevated,
+        onRefresh: () => ref.read(garageProvider.notifier).fetchCars(),
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
           // ─── Header ───────────────────────────────────────────
           SliverToBoxAdapter(
             child: _GarageHeader(userName: _userName),
@@ -130,7 +148,8 @@ class _GarageScreenState extends ConsumerState<GarageScreen> {
           const SliverToBoxAdapter(child: SizedBox(height: 32)),
         ],
       ),
-    );
+    ),
+  );
   }
 }
 

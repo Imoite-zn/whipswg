@@ -33,6 +33,90 @@ class CarModel {
 
   String get fullName => '$year $brand $name';
 
+  Map<String, dynamic> toSupabaseMap({String? userId, String? userEmail}) {
+    final validUuid = userId != null &&
+        RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')
+            .hasMatch(userId);
+
+    return {
+      'id': id,
+      if (validUuid) 'user_id': userId,
+      if (userEmail != null && userEmail.isNotEmpty) 'user_email': userEmail,
+      'name': name,
+      'brand': brand,
+      'year': year,
+      'category': category,
+      'model_url': modelUrl,
+      'thumbnail_url': thumbnailUrl,
+      'color_hex': colorHex,
+      'horsepower': horsepower,
+      'torque': torque,
+      'weight': weight,
+      'drivetrain': drivetrain,
+      'multi_angle_photos': multiAnglePhotos,
+      'is_custom_upload': isCustomUpload,
+    };
+  }
+
+  factory CarModel.fromMap(Map<String, dynamic> map) {
+    return CarModel(
+      id: map['id'] as String? ?? 'car_${DateTime.now().millisecondsSinceEpoch}',
+      name: map['name'] as String? ?? 'Vehicle',
+      brand: map['brand'] as String? ?? 'Custom',
+      year: (map['year'] as num?)?.toInt() ?? 2024,
+      category: map['category'] as String? ?? 'Custom',
+      modelUrl: map['model_url'] as String? ?? map['modelUrl'] as String? ?? '',
+      thumbnailUrl: map['thumbnail_url'] as String? ?? map['thumbnailUrl'] as String? ?? '',
+      colorHex: map['color_hex'] as String? ?? map['colorHex'] as String? ?? '#CFB84E',
+      horsepower: (map['horsepower'] as num?)?.toInt(),
+      torque: (map['torque'] as num?)?.toInt(),
+      weight: (map['weight'] as num?)?.toInt(),
+      drivetrain: map['drivetrain'] as String?,
+      multiAnglePhotos: (map['multi_angle_photos'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          (map['multiAnglePhotos'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      isCustomUpload: map['is_custom_upload'] as bool? ?? map['isCustomUpload'] as bool? ?? true,
+    );
+  }
+
+  CarModel copyWith({
+    String? id,
+    String? name,
+    String? brand,
+    int? year,
+    String? category,
+    String? modelUrl,
+    String? thumbnailUrl,
+    String? colorHex,
+    int? horsepower,
+    int? torque,
+    int? weight,
+    String? drivetrain,
+    List<String>? multiAnglePhotos,
+    bool? isCustomUpload,
+  }) {
+    return CarModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      brand: brand ?? this.brand,
+      year: year ?? this.year,
+      category: category ?? this.category,
+      modelUrl: modelUrl ?? this.modelUrl,
+      thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
+      colorHex: colorHex ?? this.colorHex,
+      horsepower: horsepower ?? this.horsepower,
+      torque: torque ?? this.torque,
+      weight: weight ?? this.weight,
+      drivetrain: drivetrain ?? this.drivetrain,
+      multiAnglePhotos: multiAnglePhotos ?? this.multiAnglePhotos,
+      isCustomUpload: isCustomUpload ?? this.isCustomUpload,
+    );
+  }
+
   /// Demo cars (using free GLB models from GitHub / public CDN)
   static final List<CarModel> demo = [
     const CarModel(

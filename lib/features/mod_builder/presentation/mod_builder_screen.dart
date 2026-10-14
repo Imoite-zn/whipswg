@@ -367,7 +367,7 @@ class _ModelViewerPanel extends StatelessWidget {
             autoRotate: activeCameraIndex == 0,
             cameraControls: true,
             cameraOrbit: cameraOrbit,
-            shadowIntensity: 1.5,
+            shadowIntensity: 1.0,
             shadowSoftness: 0.8,
             exposure: 1.25,
             backgroundColor: Colors.transparent,

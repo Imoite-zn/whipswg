@@ -115,7 +115,7 @@ class _UploadCarScreenState extends ConsumerState<UploadCarScreen>
       isCustomUpload: true,
     );
 
-    ref.read(garageProvider.notifier).addCar(car);
+    await ref.read(garageProvider.notifier).addCar(car);
 
     if (mounted) {
       setState(() => _isSubmitting = false);
