@@ -260,7 +260,7 @@ class _CategoryFilter extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
         itemBuilder: (_, i) {
           final cat = categories[i];
           final isActive = cat == selected;
@@ -342,7 +342,7 @@ class _CarCardState extends State<_CarCard> {
             border: Border.all(color: AppColors.border, width: 0.5),
             boxShadow: [
               BoxShadow(
-                color: accentColor.withOpacity(0.15),
+                color: accentColor.withValues(alpha: 0.15),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -364,12 +364,12 @@ class _CarCardState extends State<_CarCard> {
                       CachedNetworkImage(
                         imageUrl: widget.car.thumbnailUrl,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => Shimmer.fromColors(
+                        placeholder: (_, _) => Shimmer.fromColors(
                           baseColor: AppColors.surfaceElevated,
                           highlightColor: AppColors.surfaceHighlight,
                           child: Container(color: AppColors.surfaceElevated),
                         ),
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: AppColors.surfaceElevated,
                           child: const Icon(
                             Icons.directions_car,
@@ -384,7 +384,7 @@ class _CarCardState extends State<_CarCard> {
                           gradient: LinearGradient(
                             colors: [
                               Colors.transparent,
-                              AppColors.cardBg.withOpacity(0.8),
+                              AppColors.cardBg.withValues(alpha: 0.8),
                             ],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -401,7 +401,7 @@ class _CarCardState extends State<_CarCard> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: accentColor.withOpacity(0.85),
+                            color: accentColor.withValues(alpha: 0.85),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -426,7 +426,7 @@ class _CarCardState extends State<_CarCard> {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.gold.withOpacity(0.9),
+                              color: AppColors.gold.withValues(alpha: 0.9),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: const Text(
@@ -448,10 +448,10 @@ class _CarCardState extends State<_CarCard> {
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
-                            color: AppColors.background.withOpacity(0.8),
+                            color: AppColors.background.withValues(alpha: 0.8),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: accentColor.withOpacity(0.5),
+                              color: accentColor.withValues(alpha: 0.5),
                             ),
                           ),
                           child: Icon(

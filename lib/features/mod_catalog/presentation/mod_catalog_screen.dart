@@ -56,7 +56,7 @@ class _ModCatalogScreenState extends State<ModCatalogScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: _tags.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 10),
+                separatorBuilder: (_, _) => const SizedBox(width: 10),
                 itemBuilder: (_, i) {
                   final tag = _tags[i];
                   final isActive = tag == _selectedTag;

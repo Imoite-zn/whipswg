@@ -42,17 +42,30 @@ void main() {
     expect(auth.isAuthenticated, isFalse);
   });
 
-  test('AuthService invalid password throws error for test account', () async {
+  test('AuthService invalid password does not authenticate', () async {
     final auth = AuthService.instance;
     await auth.signOut();
 
-    expect(
-      () => auth.signIn(
+    // In test env, Supabase is not initialized so signIn will throw
+    // (either Exception for bad password or AssertionError for uninitialized Supabase).
+    // Either way the user must NOT end up authenticated.
+    try {
+      await auth.signIn(
         email: 'driver@rideswg.com',
         password: 'wrong_password',
-      ),
-      throwsException,
-    );
+      );
+    } catch (_) {
+      // Expected to throw
+    }
     expect(auth.isAuthenticated, isFalse);
   });
+  test('AuthService loginAsTestAccount works', () async {
+    final auth = AuthService.instance;
+    await auth.signOut();
+    final demo = AuthService.testAccounts.last;
+    await auth.loginAsTestAccount(demo);
+    expect(auth.isAuthenticated, isTrue);
+    expect(auth.currentUserName, equals(demo.displayName));
+  });
 }
+

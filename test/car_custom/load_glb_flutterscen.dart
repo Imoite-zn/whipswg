@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_scene/scene.dart' as fscene;
-import 'package:vector_math/vector_math_64.dart' as vm;
 
 // 1. Load your car model
 late fscene.Node carModel;

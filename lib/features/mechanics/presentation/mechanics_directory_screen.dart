@@ -92,7 +92,7 @@ class _MechanicsDirectoryScreenState extends State<MechanicsDirectoryScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: _sortOptions.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (_, i) {
                   final opt = _sortOptions[i];
                   final isActive = opt == _sortBy;
@@ -174,7 +174,7 @@ class _MechanicsDirectoryScreenState extends State<MechanicsDirectoryScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             sliver: SliverList.separated(
               itemCount: _sorted.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 14),
+              separatorBuilder: (_, _) => const SizedBox(height: 14),
               itemBuilder: (_, i) => _MechanicCard(
                 mechanic: _sorted[i],
                 index: i,
@@ -295,12 +295,12 @@ class _MechanicCardState extends State<_MechanicCard> {
                       CachedNetworkImage(
                         imageUrl: m.bannerUrl,
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => Shimmer.fromColors(
+                        placeholder: (_, _) => Shimmer.fromColors(
                           baseColor: AppColors.surfaceElevated,
                           highlightColor: AppColors.surfaceHighlight,
                           child: Container(color: AppColors.surfaceElevated),
                         ),
-                        errorWidget: (_, __, ___) => Container(
+                        errorWidget: (_, _, _) => Container(
                           color: AppColors.surfaceElevated,
                           child: const Icon(Icons.store, color: AppColors.textMuted, size: 36),
                         ),
@@ -361,11 +361,11 @@ class _MechanicCardState extends State<_MechanicCard> {
                             width: 44,
                             height: 44,
                             fit: BoxFit.cover,
-                            placeholder: (_, __) => Container(
+                            placeholder: (_, _) => Container(
                               color: AppColors.surfaceElevated,
                               child: const Icon(Icons.person, color: AppColors.textMuted),
                             ),
-                            errorWidget: (_, __, ___) => Container(
+                            errorWidget: (_, _, _) => Container(
                               color: AppColors.surfaceElevated,
                               child: const Icon(Icons.person, color: AppColors.textMuted),
                             ),

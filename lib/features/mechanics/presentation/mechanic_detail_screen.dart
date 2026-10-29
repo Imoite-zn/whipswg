@@ -56,12 +56,12 @@ class _MechanicDetailScreenState extends State<MechanicDetailScreen> {
                   CachedNetworkImage(
                     imageUrl: m.bannerUrl,
                     fit: BoxFit.cover,
-                    placeholder: (_, __) => Shimmer.fromColors(
+                    placeholder: (_, _) => Shimmer.fromColors(
                       baseColor: AppColors.surfaceElevated,
                       highlightColor: AppColors.surfaceHighlight,
                       child: Container(color: AppColors.surfaceElevated),
                     ),
-                    errorWidget: (_, __, ___) => Container(
+                    errorWidget: (_, _, _) => Container(
                       color: AppColors.surfaceElevated,
                       child: const Icon(Icons.store, color: AppColors.textMuted, size: 48),
                     ),
@@ -111,7 +111,7 @@ class _MechanicDetailScreenState extends State<MechanicDetailScreen> {
                             width: 64,
                             height: 64,
                             fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) => Container(
+                            errorWidget: (_, _, _) => Container(
                               color: AppColors.surfaceElevated,
                               child: const Icon(Icons.person, color: AppColors.textMuted),
                             ),

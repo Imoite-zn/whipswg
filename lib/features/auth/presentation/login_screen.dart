@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             blurRadius: 40,
                             offset: const Offset(0, 20),
                           ),
@@ -372,7 +372,7 @@ class _AnimatedBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: controller,
-      builder: (_, __) {
+      builder: (_, _) {
         return CustomPaint(
           size: MediaQuery.of(context).size,
           painter: _BgPainter(controller.value),
@@ -391,8 +391,8 @@ class _BgPainter extends CustomPainter {
     final paint = Paint()..style = PaintingStyle.fill;
 
     // Red glow top-left
-    paint.color = AppColors.primaryGlow.withOpacity(
-      0.15 + 0.05 * math.sin(t * 2 * math.pi),
+    paint.color = AppColors.primaryGlow.withValues(
+      alpha: 0.15 + 0.05 * math.sin(t * 2 * math.pi),
     );
     canvas.drawCircle(
       Offset(size.width * 0.2, size.height * 0.1),
@@ -401,8 +401,8 @@ class _BgPainter extends CustomPainter {
     );
 
     // Gold glow bottom-right
-    paint.color = AppColors.goldGlow.withOpacity(
-      0.1 + 0.04 * math.cos(t * 2 * math.pi),
+    paint.color = AppColors.goldGlow.withValues(
+      alpha: 0.1 + 0.04 * math.cos(t * 2 * math.pi),
     );
     canvas.drawCircle(
       Offset(
@@ -495,9 +495,9 @@ class _ErrorBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.error.withOpacity(0.4)),
+        border: Border.all(color: AppColors.error.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [

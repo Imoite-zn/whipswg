@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_scene/scene.dart' as fscene;
+import 'package:vector_math/vector_math.dart' as vm;
 
 class CarCustomizerScreen extends StatefulWidget {
   const CarCustomizerScreen({super.key});

@@ -84,7 +84,7 @@ class _SignUpScreenState extends State<SignUpScreen>
           children: [
             AnimatedBuilder(
               animation: _bgAnimCtrl,
-              builder: (_, __) => CustomPaint(
+              builder: (_, _) => CustomPaint(
                 size: MediaQuery.of(context).size,
                 painter: _SignupBgPainter(_bgAnimCtrl.value),
               ),
@@ -159,7 +159,7 @@ class _SignUpScreenState extends State<SignUpScreen>
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             blurRadius: 40,
                             offset: const Offset(0, 20),
                           ),
@@ -331,16 +331,16 @@ class _SignupBgPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-    paint.color = AppColors.goldGlow.withOpacity(
-      0.12 + 0.04 * math.sin(t * 2 * math.pi),
+    paint.color = AppColors.goldGlow.withValues(
+      alpha: 0.12 + 0.04 * math.sin(t * 2 * math.pi),
     );
     canvas.drawCircle(
       Offset(size.width * 0.9, size.height * 0.1),
       160,
       paint,
     );
-    paint.color = AppColors.primaryGlow.withOpacity(
-      0.08 + 0.04 * math.cos(t * 2 * math.pi),
+    paint.color = AppColors.primaryGlow.withValues(
+      alpha: 0.08 + 0.04 * math.cos(t * 2 * math.pi),
     );
     canvas.drawCircle(
       Offset(size.width * 0.1, size.height * 0.85),
@@ -434,9 +434,9 @@ class _StatusBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: color.withOpacity(0.4)),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [

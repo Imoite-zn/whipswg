@@ -1,7 +1,11 @@
 import 'package:flutter_scene/scene.dart' as fscene;
 
+import 'package:vector_math/vector_math.dart' as vm;
+
 late fscene.Node spoilerModel;
 late fscene.Node activeSpoilerNode;
+
+
 
 Future<void> attachSpoiler(fscene.Node carRoot) async {
   // 1. Load the spoiler GLB asset
